@@ -1,0 +1,58 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+
+      - name: Install Cordova
+        run: npm install -g cordova
+
+      - name: Create Cordova project
+        run: |
+          cordova create build_tmp com.miokaraoke.app "Mio Karaoke"
+          cp config.xml build_tmp/config.xml
+          cp www/index.html build_tmp/www/index.html
+          # Crea icona placeholder se non esiste
+          if [ ! -f www/icon.png ]; then
+            cd build_tmp/www && convert -size 512x512 xc:#1DB954 icon.png 2>/dev/null || true
+          else
+            cp www/icon.png build_tmp/www/icon.png
+          fi
+
+      - name: Add Android platform
+        working-directory: build_tmp
+        run: |
+          cordova platform add android@11
+          cordova plugin add cordova-plugin-whitelist
+          cordova plugin add cordova-plugin-inappbrowser
+
+      - name: Build APK (debug)
+        working-directory: build_tmp
+        run: cordova build android --debug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: karaoke-debug
+          path: build_tmp/platforms/android/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 30
