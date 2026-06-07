@@ -11,7 +11,7 @@
 
     <preference name="DisallowOverscroll" value="true" />
     <preference name="android-minSdkVersion" value="22" />
-    <preference name="android-targetSdkVersion" value="33" />
+    <preference name="android-targetSdkVersion" value="30" />
     <preference name="BackgroundColor" value="0xff0a0a0f" />
     <preference name="LoadUrlTimeoutValue" value="700000" />
 
