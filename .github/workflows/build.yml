@@ -51,7 +51,7 @@ jobs:
         run: cordova build android --debug
 
       - name: Upload APK
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: karaoke-debug
           path: build_tmp/platforms/android/app/build/outputs/apk/debug/app-debug.apk
